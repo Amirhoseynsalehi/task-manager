@@ -79,5 +79,8 @@ public class TaskService {
                 .toList();
     }
 
+    public void saveTasks() {
+        repository.saveTasks();
+    }
 
 }

@@ -1,5 +1,4 @@
 import model.Task;
-import model.TaskPersistence;
 import model.TaskPriority;
 import model.TaskStatus;
 import repository.TaskRepository;
@@ -51,7 +50,7 @@ public class Main {
                     advancedFilterUI();
                     break;
                 case "0":
-                    TaskPersistence.saveTasks(repository.getTaskMap());
+                    service.saveTasks();
                     System.out.println("Tasks saved. Goodbye!");
                     return;
                 default:

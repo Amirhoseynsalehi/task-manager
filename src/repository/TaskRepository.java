@@ -24,7 +24,7 @@ public class TaskRepository {
         return new ArrayList<>(tasks.values());
     }
 
-    public Map<UUID, Task> getTaskMap() {
-        return tasks; // لازم برای save در Main
+    public void saveTasks() {
+        TaskPersistence.saveTasks(this.tasks);
     }
 }
