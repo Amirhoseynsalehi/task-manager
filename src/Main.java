@@ -83,14 +83,14 @@ public class Main {
             System.out.print("Enter task description:");
             String description = scanner.nextLine();
 
-            System.out.println("Select task priority: HIGH / MEDIUM / LOW");
+            System.out.println("Select task priority: HIGH / MEDIUM / LOW / URGENT");
             String priorityInput = scanner.nextLine().trim().toUpperCase();
 
             TaskPriority priority;
             try {
                 priority = TaskPriority.valueOf(priorityInput);
             } catch (IllegalArgumentException e) {
-                System.out.println("Invalid priority! Valid options: HIGH / MEDIUM / LOW");
+                System.out.println("Invalid priority! Valid options: HIGH / MEDIUM / LOW /  URGENT");
                 return;
             }
 
@@ -156,7 +156,7 @@ public class Main {
 
             UUID id = UUID.fromString(idInput);
 
-            System.out.println("Enter new status: TODO / IN_PROGRESS / DONE");
+            System.out.println("Enter new status: TODO / IN_PROGRESS / DONE / CANCELLED");
             String statusInput = scanner.nextLine().trim().toUpperCase();
 
             TaskStatus status;
@@ -213,9 +213,9 @@ public class Main {
     private static void getTasksByStatusUI() {
 
         try {
-            System.out.println("Enter status: TODO / IN_PROGRESS / DONE");
+            System.out.println("Enter status: TODO / IN_PROGRESS / DONE / CANCELLED");
 
-            String input = scanner.nextLine().toUpperCase();
+            String input = scanner.nextLine().trim().toUpperCase();
 
             TaskStatus status = TaskStatus.valueOf(input);
 
@@ -231,7 +231,7 @@ public class Main {
             tasks.forEach(System.out::println);
 
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid status. Valid options: TODO / IN_PROGRESS / DONE");
+            System.out.println("Invalid status. Valid options: TODO / IN_PROGRESS / DONE / CANCELLED");
         } catch (Exception e) {
             System.out.println("Error while filtering tasks: " + e.getMessage());
         }
@@ -240,11 +240,11 @@ public class Main {
     private static void advancedFilterUI() {
 
         try {
-            System.out.println("Enter status: TODO / IN_PROGRESS / DONE");
-            TaskStatus status = TaskStatus.valueOf(scanner.nextLine().toUpperCase());
+            System.out.println("Enter status: TODO / IN_PROGRESS / DONE / CANCELLED");
+            TaskStatus status = TaskStatus.valueOf(scanner.nextLine().trim().toUpperCase());
 
-            System.out.println("Enter priority: HIGH / MEDIUM / LOW");
-            TaskPriority priority = TaskPriority.valueOf(scanner.nextLine().toUpperCase());
+            System.out.println("Enter priority: HIGH / MEDIUM / LOW /  URGENT");
+            TaskPriority priority = TaskPriority.valueOf(scanner.nextLine().trim().toUpperCase());
 
             List<Task> tasks = service.filterTasks(status, priority);
 
