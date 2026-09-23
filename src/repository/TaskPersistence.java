@@ -1,4 +1,6 @@
-package model;
+package repository;
+
+import model.Task;
 
 import java.io.*;
 import java.util.HashMap;

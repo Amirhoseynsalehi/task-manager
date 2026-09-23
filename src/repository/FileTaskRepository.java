@@ -1,29 +1,33 @@
 package repository;
 
 import model.Task;
-import model.TaskPersistence;
 import java.util.*;
 
-public class TaskRepository {
+public class FileTaskRepository implements TaskRepository {
 
-    private Map<UUID, Task> tasks = TaskPersistence.loadTasks();
+    private final Map<UUID, Task> tasks = TaskPersistence.loadTasks();
 
-    public void addTask(Task task) {
+    @Override
+    public void save(Task task) {
         tasks.put(task.getId(), task);
     }
 
+    @Override
     public Optional<Task> findById(UUID id) {
         return Optional.ofNullable(tasks.get(id));
     }
 
-    public void removeTask(UUID id) {
+    @Override
+    public void deleteById(UUID id) {
         tasks.remove(id);
     }
 
-    public List<Task> getAllTasks() {
+    @Override
+    public List<Task> findAll() {
         return new ArrayList<>(tasks.values());
     }
 
+    @Override
     public void saveTasks() {
         TaskPersistence.saveTasks(this.tasks);
     }

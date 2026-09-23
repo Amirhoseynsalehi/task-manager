@@ -1,6 +1,7 @@
 import model.Task;
 import model.TaskPriority;
 import model.TaskStatus;
+import repository.FileTaskRepository;
 import repository.TaskRepository;
 import service.TaskService;
 
@@ -16,7 +17,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        TaskRepository repository = new TaskRepository();
+        TaskRepository repository = new FileTaskRepository();
         service = new TaskService(repository);
         scanner = new Scanner(System.in);
 
