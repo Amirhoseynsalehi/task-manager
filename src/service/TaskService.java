@@ -1,11 +1,15 @@
 package service;
 
+import exception.InvalidTaskDataException;
+import exception.TaskNotFoundException;
 import model.Task;
 import model.TaskPriority;
 import model.TaskStatus;
 import repository.TaskRepository;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class TaskService {
@@ -17,9 +21,8 @@ public class TaskService {
     }
 
     public Task createTask(String title, String description, TaskPriority priority) {
-
         if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("Title cannot be empty");
+            throw new InvalidTaskDataException("Title cannot be empty");
         }
 
         Task task = new Task(title, description, priority);
@@ -30,7 +33,7 @@ public class TaskService {
 
     public Task findById(UUID id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Task not found"));
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + id));
     }
 
     public List<Task> getAllTasks() {
@@ -44,7 +47,7 @@ public class TaskService {
 
     public void updateStatus(UUID id, TaskStatus status) {
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("تسک پیدا نشد"));
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + id));
 
         task.setStatus(status);
     }
@@ -71,7 +74,6 @@ public class TaskService {
     }
 
     public List<Task> filterTasks(TaskStatus status, TaskPriority priority) {
-
         return taskRepository.findAll()
                 .stream()
                 .filter(task -> task.getStatus() == status
@@ -82,5 +84,4 @@ public class TaskService {
     public void saveTasks() {
         taskRepository.saveTasks();
     }
-
 }

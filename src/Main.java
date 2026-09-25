@@ -4,6 +4,8 @@ import model.TaskStatus;
 import repository.FileTaskRepository;
 import repository.TaskRepository;
 import service.TaskService;
+import exception.InvalidTaskDataException;
+import exception.TaskNotFoundException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -78,10 +80,10 @@ public class Main {
 
     private static void createTaskUI() {
         try {
-            System.out.print("Enter task title:");
+            System.out.print("Enter task title: ");
             String title = scanner.nextLine();
 
-            System.out.print("Enter task description:");
+            System.out.print("Enter task description: ");
             String description = scanner.nextLine();
 
             System.out.println("Select task priority: HIGH / MEDIUM / LOW / URGENT");
@@ -91,7 +93,7 @@ public class Main {
             try {
                 priority = TaskPriority.valueOf(priorityInput);
             } catch (IllegalArgumentException e) {
-                System.out.println("Invalid priority! Valid options: HIGH / MEDIUM / LOW /  URGENT");
+                System.out.println("Invalid priority! Valid options: HIGH / MEDIUM / LOW / URGENT");
                 return;
             }
 
@@ -100,12 +102,13 @@ public class Main {
             System.out.println("\nTask created successfully.");
             System.out.println(task);
 
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
+        } catch (InvalidTaskDataException e) {
+            System.out.println("Validation Error: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("An unexpected error occurred:" + e.getMessage());
+            System.out.println("An unexpected error occurred: " + e.getMessage());
         }
     }
+
 
     private static void listTasksUI() {
         try {
@@ -150,9 +153,9 @@ public class Main {
         }
     }
 
-    private static void updateStatusUI() {
+        private static void updateStatusUI() {
         try {
-            System.out.print("Enter task ID:");
+            System.out.print("Enter task ID: ");
             String idInput = scanner.nextLine();
 
             UUID id = UUID.fromString(idInput);
@@ -161,27 +164,27 @@ public class Main {
             String statusInput = scanner.nextLine().trim().toUpperCase();
 
             TaskStatus status;
-
             try {
                 status = TaskStatus.valueOf(statusInput);
             } catch (IllegalArgumentException e) {
-                System.out.println("Invalid status.");
+                System.out.println("Invalid status! Valid options: TODO / IN_PROGRESS / DONE / CANCELLED");
                 return;
             }
 
             service.updateStatus(id, status);
-
             System.out.println("Task status updated successfully.");
 
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid ID format.");
-        } catch (Exception e) {
+            System.out.println("Invalid ID format! Please enter a valid UUID.");
+        } catch (TaskNotFoundException e) {
             System.out.println("Error: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
         }
     }
 
-    private static void deleteTaskUI() {
 
+    private static void deleteTaskUI() {
         try {
             System.out.print("Enter task ID: ");
             String idInput = scanner.nextLine();
@@ -189,27 +192,35 @@ public class Main {
             UUID id = UUID.fromString(idInput);
 
             service.deleteTask(id);
-
             System.out.println("Task deleted successfully.");
 
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid UUID format.");
-        } catch (NoSuchElementException e) {
-            System.out.println("Task not found.");
+            System.out.println("Invalid ID format! Please enter a valid UUID.");
+        } catch (TaskNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
         }
     }
+
 
     private static void sortByPriorityUI() {
+        try {
+            List<Task> tasks = service.sortByPriority();
 
-        List<Task> tasks = service.sortByPriority();
+            if (tasks.isEmpty()) {
+                System.out.println("No tasks found.");
+                return;
+            }
 
-        if (tasks.isEmpty()) {
-            System.out.println("No tasks found.");
-            return;
+            System.out.println("\n=== Tasks sorted by priority ===");
+            tasks.forEach(System.out::println);
+            System.out.println("--------------------------------");
+        } catch (Exception e) {
+            System.out.println("Error while sorting tasks: " + e.getMessage());
         }
-
-        tasks.forEach(System.out::println);
     }
+
 
     private static void getTasksByStatusUI() {
 
