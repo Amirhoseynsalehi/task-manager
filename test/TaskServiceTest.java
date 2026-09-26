@@ -5,8 +5,8 @@ import model.TaskPriority;
 import model.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.TaskService;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,44 +14,55 @@ import static org.junit.jupiter.api.Assertions.*;
 class TaskServiceTest {
 
     private FakeTaskRepository fakeRepository;
-    private service.TaskService taskService;
+    private TaskService taskService;
 
     @BeforeEach
     void setUp() {
-        // قبل از اجرای هر تست، یک مخزن خالی و سرویس تمیز می‌سازیم (ایزولاسیون کامل)
+        // قبل از هر تست یک مخزن درون‌حافظه‌ای تمیز و سرویس تازه می‌سازیم
         fakeRepository = new FakeTaskRepository();
-        taskService = new service.TaskService(fakeRepository);
+        taskService = new TaskService(fakeRepository);
     }
 
     @Test
     void createTask_validData_shouldCreateTaskSuccessfully() {
         // Arrange
         String title = "Complete Unit Tests";
+        String description = "Writing JUnit tests for TaskService";
         TaskPriority priority = TaskPriority.HIGH;
 
         // Act
-        Task createdTask = taskService.createTask(title, priority);
+        Task createdTask = taskService.createTask(title, description, priority);
 
         // Assert
         assertNotNull(createdTask);
         assertNotNull(createdTask.getId());
         assertEquals("Complete Unit Tests", createdTask.getTitle());
+        assertEquals("Writing JUnit tests for TaskService", createdTask.getDescription());
         assertEquals(TaskPriority.HIGH, createdTask.getPriority());
         assertEquals(TaskStatus.TODO, createdTask.getStatus());
+        assertNotNull(createdTask.getCreatedAt());
     }
 
     @Test
     void createTask_blankTitle_shouldThrowInvalidTaskDataException() {
         // Assert & Act
         assertThrows(InvalidTaskDataException.class, () -> {
-            taskService.createTask("   ", TaskPriority.LOW);
+            taskService.createTask("   ", "Some description", TaskPriority.LOW);
+        });
+    }
+
+    @Test
+    void createTask_nullTitle_shouldThrowInvalidTaskDataException() {
+        // Assert & Act
+        assertThrows(InvalidTaskDataException.class, () -> {
+            taskService.createTask(null, "Some description", TaskPriority.LOW);
         });
     }
 
     @Test
     void findById_existingId_shouldReturnTask() {
         // Arrange
-        Task task = taskService.createTask("Learn Spring", TaskPriority.MEDIUM);
+        Task task = taskService.createTask("Learn Spring", "Dependency Injection basics", TaskPriority.MEDIUM);
 
         // Act
         Task found = taskService.findById(task.getId());
@@ -75,7 +86,7 @@ class TaskServiceTest {
     @Test
     void updateStatus_existingTask_shouldUpdateSuccessfully() {
         // Arrange
-        Task task = taskService.createTask("Write Documentation", TaskPriority.LOW);
+        Task task = taskService.createTask("Write Documentation", "Docs for API", TaskPriority.LOW);
 
         // Act
         taskService.updateStatus(task.getId(), TaskStatus.DONE);
@@ -88,7 +99,7 @@ class TaskServiceTest {
     @Test
     void deleteTask_existingTask_shouldRemoveTask() {
         // Arrange
-        Task task = taskService.createTask("Task to remove", TaskPriority.LOW);
+        Task task = taskService.createTask("Task to remove", "Will be deleted", TaskPriority.LOW);
         UUID taskId = task.getId();
 
         // Act
