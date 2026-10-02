@@ -14,7 +14,6 @@ public class Task implements Serializable {
     private TaskStatus status;
     private TaskPriority priority;
     private LocalDateTime createdAt;
-    private LocalDateTime dueDate;
 
     public Task(String title, String description, TaskPriority priority) {
         this.id = UUID.randomUUID();
@@ -49,24 +48,8 @@ public class Task implements Serializable {
         return createdAt;
     }
 
-    public LocalDateTime getDueDate() {
-        return dueDate;
-    }
-
     public void setStatus(TaskStatus status) {
         this.status = status;
-    }
-
-    public void setPriority(TaskPriority priority) {
-        this.priority = priority;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override
@@ -76,7 +59,6 @@ public class Task implements Serializable {
                 ", title='" + title + '\'' +
                 ", status=" + status +
                 ", priority=" + priority +
-                ", dueDate=" + dueDate +
                 '}';
     }
 
