@@ -23,6 +23,10 @@ public class Main {
         service = new TaskService(repository);
         scanner = new Scanner(System.in);
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            service.saveTasks();
+        }));
+
         while (true) {
             printMenu();
             String choice = scanner.nextLine().trim();
