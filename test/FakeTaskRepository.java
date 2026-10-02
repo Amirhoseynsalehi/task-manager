@@ -9,7 +9,6 @@ public class FakeTaskRepository implements TaskRepository {
     @Override
     public void save(Task task) {
         storage.put(task.getId(), task);
-        saveTasks();
     }
 
     @Override
@@ -20,7 +19,6 @@ public class FakeTaskRepository implements TaskRepository {
     @Override
     public void deleteById(UUID id) {
         storage.remove(id);
-        saveTasks();
     }
 
     @Override

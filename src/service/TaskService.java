@@ -50,7 +50,7 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + id));
 
         task.setStatus(status);
-        saveTasks();
+        taskRepository.save(task);
     }
 
     public List<Task> getTasksByStatus(TaskStatus status) {

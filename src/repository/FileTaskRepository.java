@@ -10,6 +10,7 @@ public class FileTaskRepository implements TaskRepository {
     @Override
     public void save(Task task) {
         tasks.put(task.getId(), task);
+        saveTasks();
     }
 
     @Override
@@ -20,6 +21,7 @@ public class FileTaskRepository implements TaskRepository {
     @Override
     public void deleteById(UUID id) {
         tasks.remove(id);
+        saveTasks();
     }
 
     @Override
