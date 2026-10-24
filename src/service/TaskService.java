@@ -7,6 +7,7 @@ import model.TaskPriority;
 import model.TaskStatus;
 import repository.TaskRepository;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -39,6 +40,30 @@ public class TaskService {
         return taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + id));
     }
+
+    public Task updateTask(UUID id, String newTitle, String newDescription,
+                           TaskPriority newPriority, LocalDate newDueDate, TaskStatus newStatus) {
+        Task task = findById(id);
+
+        if (newTitle == null || newTitle.trim().isEmpty()) {
+            throw new InvalidTaskDataException("Title cannot be empty");
+        }
+
+        // اگر تاریخ تغییر کرده و تاریخ جدید به گذشته اشاره دارد، ارور می‌دهد
+        if (newDueDate != null && !newDueDate.equals(task.getDueDate()) && newDueDate.isBefore(LocalDate.now())) {
+            throw new InvalidTaskDataException("Due date cannot be before current date");
+        }
+
+        task.setTitle(newTitle.trim());
+        task.setDescription(newDescription != null ? newDescription.trim() : "");
+        task.setPriority(newPriority);
+        task.setDueDate(newDueDate);
+        task.setStatus(newStatus);
+
+        taskRepository.save(task);
+        return task;
+    }
+
 
     public List<Task> getAllTasks() {
         return taskRepository.findAll();

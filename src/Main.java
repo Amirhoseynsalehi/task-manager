@@ -7,8 +7,9 @@ import service.TaskService;
 import exception.InvalidTaskDataException;
 import exception.TaskNotFoundException;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -36,25 +37,34 @@ public class Main {
                     createTaskUI();
                     break;
                 case "2":
-                    listTasksUI();
+                    updateTaskUI();
                     break;
                 case "3":
-                    searchByTitleUI();
+                    listTasksUI();
                     break;
                 case "4":
-                    updateStatusUI();
+                    searchByTitleUI();
                     break;
                 case "5":
-                    deleteTaskUI();
+                    updateStatusUI();
                     break;
                 case "6":
-                    sortByPriorityUI();
+                    deleteTaskUI();
                     break;
                 case "7":
-                    getTasksByStatusUI();
+                    sortByPriorityUI();
                     break;
                 case "8":
+                    getTasksByStatusUI();
+                    break;
+                case "9":
                     advancedFilterUI();
+                    break;
+                case "10":
+                    showOverdueTasksUI();
+                    break;
+                case "11":
+                    sortByDueDateUI();
                     break;
                 case "0":
                     service.saveTasks();
@@ -69,13 +79,16 @@ public class Main {
     private static void printMenu() {
         System.out.println("\n=== Task Manager ===");
         System.out.println("1. Create Task");
-        System.out.println("2. List Tasks");
-        System.out.println("3. Search by Title");
-        System.out.println("4. Update Status");
-        System.out.println("5. Delete Task");
-        System.out.println("6. Sort by Priority");
-        System.out.println("7. Search by Status");
-        System.out.println("8. Search advance");
+        System.out.println("2. Update Task");
+        System.out.println("3. List Tasks");
+        System.out.println("4. Search by Title");
+        System.out.println("5. Update Status");
+        System.out.println("6. Delete Task");
+        System.out.println("7. Sort by Priority");
+        System.out.println("8. Search by Status");
+        System.out.println("9. Search advance");
+        System.out.println("10. Show overdue tasks");
+        System.out.println("11. Sort by due date");
         System.out.println("0. Exit");
         System.out.print("\nEnter your choice:");
     }
@@ -112,6 +125,66 @@ public class Main {
             System.out.println("An unexpected error occurred: " + e.getMessage());
         }
     }
+
+    private static void updateTaskUI() {
+        System.out.print("Enter Task ID: ");
+        String idInput = scanner.nextLine().trim();
+
+        try {
+            UUID id = UUID.fromString(idInput);
+            Task current = service.findById(id);
+
+            System.out.println("\n--- Current Task Details ---");
+            System.out.println("Title: " + current.getTitle());
+            System.out.println("Description: " + current.getDescription());
+            System.out.println("Priority: " + current.getPriority());
+            System.out.println("Due Date: " + (current.getDueDate() != null ? current.getDueDate() : "None"));
+            System.out.println("Status: " + current.getStatus());
+            System.out.println("-----------------------------");
+            System.out.println("(Press Enter to keep current value)\n");
+
+            // 1. Title
+            System.out.printf("New Title [%s]: ", current.getTitle());
+            String titleInput = scanner.nextLine().trim();
+            String title = titleInput.isEmpty() ? current.getTitle() : titleInput;
+
+            // 2. Description
+            System.out.printf("New Description [%s]: ", current.getDescription());
+            String descInput = scanner.nextLine().trim();
+            String description = descInput.isEmpty() ? current.getDescription() : descInput;
+
+            // 3. Priority
+            System.out.printf("New Priority (LOW, MEDIUM, HIGH, URGENT) [%s]: ", current.getPriority());
+            String priorityInput = scanner.nextLine().trim().toUpperCase();
+            TaskPriority priority = priorityInput.isEmpty()
+                    ? current.getPriority()
+                    : TaskPriority.valueOf(priorityInput);
+
+            // 4. Due Date
+            System.out.printf("New Due Date (YYYY-MM-DD) [%s]: ", (current.getDueDate() != null ? current.getDueDate() : "None"));
+            String dueDateInput = scanner.nextLine().trim();
+            LocalDate dueDate = dueDateInput.isEmpty()
+                    ? current.getDueDate()
+                    : LocalDate.parse(dueDateInput);
+
+            // 5. Status
+            System.out.printf("New Status (TODO, IN_PROGRESS, DONE) [%s]: ", current.getStatus());
+            String statusInput = scanner.nextLine().trim().toUpperCase();
+            TaskStatus status = statusInput.isEmpty()
+                    ? current.getStatus()
+                    : TaskStatus.valueOf(statusInput);
+
+            service.updateTask(id, title, description, priority, dueDate, status);
+            System.out.println("✔ Task updated successfully!");
+
+        } catch (IllegalArgumentException | DateTimeParseException e) {
+            System.out.println("❌ Invalid input format: " + e.getMessage());
+        } catch (InvalidTaskDataException | TaskNotFoundException e) {
+            System.out.println("❌ " + e.getMessage());
+        }
+    }
+
+
 
 
     private static void listTasksUI() {
