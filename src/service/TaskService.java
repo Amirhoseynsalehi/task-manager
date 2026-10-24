@@ -20,12 +20,16 @@ public class TaskService {
         this.taskRepository = repository;
     }
 
-    public Task createTask(String title, String description, TaskPriority priority) {
+    public Task createTask(String title, String description, TaskPriority priority, LocalDate dueDate) {
         if (title == null || title.isBlank()) {
             throw new InvalidTaskDataException("Title cannot be empty");
         }
 
-        Task task = new Task(title, description, priority);
+        if (dueDate != null && dueDate.isBefore(LocalDate.now())) {
+            throw new InvalidTaskDataException("Due date cannot be before current date");
+        }
+
+        Task task = new Task(title, description, priority,  dueDate);
         taskRepository.save(task);
 
         return task;
