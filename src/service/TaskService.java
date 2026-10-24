@@ -114,4 +114,23 @@ public class TaskService {
     public void saveTasks() {
         taskRepository.saveTasks();
     }
+
+    public List<Task> sortByDueDate() {
+        return taskRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(
+                        Task::getDueDate,
+                        Comparator.nullsLast(Comparator.naturalOrder())
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public List<Task> getOverdueTasks() {
+        LocalDate today = LocalDate.now();
+        return taskRepository.findAll()
+                .stream()
+                .filter(task -> task.getStatus() != TaskStatus.DONE)
+                .filter(task -> task.getDueDate() != null && task.getDueDate().isBefore(today))
+                .collect(Collectors.toList());
+    }
 }

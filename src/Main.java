@@ -365,4 +365,25 @@ public class Main {
             System.out.println("Error while filtering tasks: " + e.getMessage());
         }
     }
+
+    private static void showOverdueTasksUI() {
+        System.out.println("=== Overdue Tasks (NOT DONE, dueDate before today) ===");
+        var tasks = service.getOverdueTasks();
+        if (tasks.isEmpty()) {
+            System.out.println("No overdue tasks found.");
+            return;
+        }
+        tasks.forEach(System.out::println);
+    }
+
+    private static void sortByDueDateUI() {
+        System.out.println("=== Tasks Sorted by Due Date (nulls last) ===");
+        var tasks = service.sortByDueDate();
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks found.");
+            return;
+        }
+        tasks.forEach(System.out::println);
+    }
+
 }
