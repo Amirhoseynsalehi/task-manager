@@ -114,7 +114,20 @@ public class Main {
                 return;
             }
 
-            Task task = service.createTask(title, description, priority);
+        System.out.print("Enter due date (YYYY-MM-DD) [Optional, press Enter to skip]: ");
+        String dateInput = scanner.nextLine().trim();
+
+        LocalDate dueDate = null;
+        if (!dateInput.isEmpty()) {
+            try {
+                dueDate = LocalDate.parse(dateInput);
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format! Please use YYYY-MM-DD (e.g., 2026-11-01).");
+                return;
+            }
+        }
+
+        Task task = service.createTask(title, description, priority, dueDate);
 
             System.out.println("\nTask created successfully.");
             System.out.println(task);
