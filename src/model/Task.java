@@ -10,12 +10,12 @@ public class Task implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private UUID id;
+    private final UUID id;
     private String title;
     private String description;
     private TaskStatus status;
     private TaskPriority priority;
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt;
     private LocalDate dueDate;
 
     public Task(String title, String description, TaskPriority priority, LocalDate dueDate) {
