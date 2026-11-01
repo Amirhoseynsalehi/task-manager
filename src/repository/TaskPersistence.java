@@ -2,6 +2,9 @@ package repository;
 
 import model.Task;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,16 +19,25 @@ public class TaskPersistence {
             return new HashMap<>();
         }
 
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            return (Map<UUID, Task>) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Warning: Could not read " + FILE_NAME + " properly: " + e.getMessage());
-            File backup = new File(FILE_NAME + ".bak");
-            file.renameTo(backup);
-            System.err.println("Corrupted file backed up to " + FILE_NAME + ".bak");
-            return new HashMap<>();
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+        return (Map<UUID, Task>) ois.readObject();
+    } catch (IOException | ClassNotFoundException e) {
+        System.err.println("Warning: Could not read " + FILE_NAME + " properly: " + e.getMessage());
+
+        Path sourcePath = file.toPath();
+        Path backupPath = new File(FILE_NAME + ".bak").toPath();
+
+        try {
+            Files.copy(sourcePath, backupPath, StandardCopyOption.REPLACE_EXISTING);
+            System.err.println("Corrupted file successfully backed up to " + FILE_NAME + ".bak");
+        } catch (IOException ex) {
+            System.err.println("Failed to create backup file: " + ex.getMessage());
         }
+
+        return new HashMap<>();
     }
+}
+
 
     public static void saveTasks(Map<UUID, Task> tasks) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
