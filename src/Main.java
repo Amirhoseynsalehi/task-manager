@@ -3,6 +3,7 @@ import model.TaskPriority;
 import model.TaskStatus;
 import repository.FileTaskRepository;
 import repository.TaskRepository;
+import repository.TaskPersistence;
 import service.TaskService;
 import exception.InvalidTaskDataException;
 import exception.TaskNotFoundException;
@@ -10,6 +11,7 @@ import exception.TaskNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -20,7 +22,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        TaskRepository repository = new FileTaskRepository();
+        Map<UUID, Task> loadedTasks = TaskPersistence.loadTasks();
+        TaskRepository repository = new FileTaskRepository(loadedTasks);
         service = new TaskService(repository);
         scanner = new Scanner(System.in);
 

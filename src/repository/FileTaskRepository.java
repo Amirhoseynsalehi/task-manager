@@ -5,7 +5,11 @@ import java.util.*;
 
 public class FileTaskRepository implements TaskRepository {
 
-    private final Map<UUID, Task> tasks = TaskPersistence.loadTasks();
+    private final Map<UUID, Task> tasks;
+
+    public FileTaskRepository(Map<UUID, Task> tasks) {
+        this.tasks = tasks;
+    }
 
     @Override
     public void save(Task task) {
