@@ -30,8 +30,13 @@ public class FileTaskRepository implements TaskRepository {
 
     @Override
     public List<Task> findAll() {
-        return new ArrayList<>(tasks.values());
+        List<Task> deepCopyList = new ArrayList<>();
+        for (Task task : tasks.values()) {
+            deepCopyList.add(new Task(task));
+        }
+        return deepCopyList;
     }
+
 
     @Override
     public void saveTasks() {

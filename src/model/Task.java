@@ -90,6 +90,16 @@ public class Task implements Serializable {
                 '}';
     }
 
+    public Task(Task other) {
+        this.id = other.id;
+        this.title = other.title;
+        this.description = other.description;
+        this.status = other.status;
+        this.priority = other.priority;
+        this.createdAt = other.createdAt;
+        this.dueDate = other.dueDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
