@@ -49,7 +49,6 @@ public class TaskService {
             throw new InvalidTaskDataException("Title cannot be empty");
         }
 
-        // اگر تاریخ تغییر کرده و تاریخ جدید به گذشته اشاره دارد، ارور می‌دهد
         if (newDueDate != null && !newDueDate.equals(task.getDueDate()) && newDueDate.isBefore(LocalDate.now())) {
             throw new InvalidTaskDataException("Due date cannot be before current date");
         }
@@ -86,21 +85,21 @@ public class TaskService {
         return taskRepository.findAll()
                 .stream()
                 .filter(t -> t.getStatus() == status)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<Task> searchByTitle(String keyword) {
         return taskRepository.findAll()
                 .stream()
                 .filter(t -> t.getTitle().toLowerCase().contains(keyword.toLowerCase()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<Task> sortByPriority() {
         return taskRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Task::getPriority))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<Task> filterTasks(TaskStatus status, TaskPriority priority) {
@@ -122,7 +121,7 @@ public class TaskService {
                         Task::getDueDate,
                         Comparator.nullsLast(Comparator.naturalOrder())
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<Task> getOverdueTasks() {
@@ -131,6 +130,6 @@ public class TaskService {
                 .stream()
                 .filter(task -> task.getStatus() != TaskStatus.DONE)
                 .filter(task -> task.getDueDate() != null && task.getDueDate().isBefore(today))
-                .collect(Collectors.toList());
+                .toList();
     }
 }
