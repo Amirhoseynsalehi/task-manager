@@ -37,6 +37,9 @@ public class TaskService {
     }
 
     public Task findById(UUID id) {
+        if (id == null) {
+            throw new InvalidTaskDataException("Task ID cannot be null");
+        }
         return taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + id));
     }
