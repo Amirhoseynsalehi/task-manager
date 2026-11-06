@@ -89,9 +89,13 @@ public class TaskService {
     }
 
     public List<Task> searchByTitle(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return List.of();
+        }
+        String lowerKeyword = keyword.toLowerCase().trim();
         return taskRepository.findAll()
                 .stream()
-                .filter(t -> t.getTitle().toLowerCase().contains(keyword.toLowerCase()))
+                .filter(t -> t.getTitle() != null && t.getTitle().toLowerCase().contains(lowerKeyword))
                 .toList();
     }
 
@@ -105,8 +109,8 @@ public class TaskService {
     public List<Task> filterTasks(TaskStatus status, TaskPriority priority) {
         return taskRepository.findAll()
                 .stream()
-                .filter(task -> task.getStatus() == status
-                        && task.getPriority() == priority)
+                .filter(task -> (status == null || task.getStatus() == status))
+                .filter(task -> (priority == null || task.getPriority() == priority))
                 .toList();
     }
 
