@@ -53,6 +53,12 @@ public class TaskService {
         if (newTitle == null || newTitle.trim().isEmpty()) {
             throw new InvalidTaskDataException("Title cannot be empty");
         }
+        if (newPriority == null) {
+            throw new InvalidTaskDataException("Priority cannot be null");
+        }
+        if (newStatus == null) {
+            throw new InvalidTaskDataException("Status cannot be null");
+        }
 
         if (newDueDate != null && !newDueDate.equals(task.getDueDate()) && newDueDate.isBefore(LocalDate.now())) {
             throw new InvalidTaskDataException("Due date cannot be before current date");
