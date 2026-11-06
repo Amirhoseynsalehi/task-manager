@@ -110,12 +110,16 @@ public class TaskService {
                 .toList();
     }
 
-    public List<Task> sortByPriority() {
-        return taskRepository.findAll()
-                .stream()
-                .sorted(Comparator.comparing(Task::getPriority))
-                .toList();
-    }
+  public List<Task> sortByPriority() {
+      return taskRepository.findAll()
+              .stream()
+              .sorted(Comparator.comparing(
+                      Task::getPriority,
+                      Comparator.nullsLast(Comparator.naturalOrder())
+              ))
+              .toList();
+  }
+
 
     public List<Task> filterTasks(TaskStatus status, TaskPriority priority) {
         return taskRepository.findAll()
