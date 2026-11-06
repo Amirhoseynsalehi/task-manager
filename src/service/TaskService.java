@@ -17,9 +17,13 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
 
-    public TaskService(TaskRepository repository) {
-        this.taskRepository = repository;
+public TaskService(TaskRepository repository) {
+    if (repository == null) {
+        throw new IllegalArgumentException("TaskRepository cannot be null");
     }
+    this.taskRepository = repository;
+}
+
 
     public Task createTask(String title, String description, TaskPriority priority, LocalDate dueDate) {
         if (title == null || title.isBlank()) {
