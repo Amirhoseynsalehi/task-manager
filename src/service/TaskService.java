@@ -16,12 +16,12 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
 
-public TaskService(TaskRepository repository) {
-    if (repository == null) {
-        throw new IllegalArgumentException("TaskRepository cannot be null");
+    public TaskService(TaskRepository repository) {
+        if (repository == null) {
+            throw new IllegalArgumentException("TaskRepository cannot be null");
+        }
+        this.taskRepository = repository;
     }
-    this.taskRepository = repository;
-}
 
 
     public Task createTask(String title, String description, TaskPriority priority, LocalDate dueDate) {
@@ -35,7 +35,7 @@ public TaskService(TaskRepository repository) {
             throw new InvalidTaskDataException("Due date cannot be before current date");
         }
 
-        Task task = new Task(title, description, priority,  dueDate);
+        Task task = new Task(title, description, priority, dueDate);
         taskRepository.save(task);
 
         return task;
@@ -105,15 +105,15 @@ public TaskService(TaskRepository repository) {
                 .toList();
     }
 
-  public List<Task> sortByPriority() {
-      return taskRepository.findAll()
-              .stream()
-              .sorted(Comparator.comparing(
-                      Task::getPriority,
-                      Comparator.nullsLast(Comparator.naturalOrder())
-              ))
-              .toList();
-  }
+    public List<Task> sortByPriority() {
+        return taskRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(
+                        Task::getPriority,
+                        Comparator.nullsLast(Comparator.naturalOrder())
+                ))
+                .toList();
+    }
 
 
     public List<Task> filterTasks(TaskStatus status, TaskPriority priority) {
