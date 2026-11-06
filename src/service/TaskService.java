@@ -88,14 +88,6 @@ public TaskService(TaskRepository repository) {
         taskRepository.deleteById(id);
     }
 
-    public void updateStatus(UUID id, TaskStatus status) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + id));
-
-        task.setStatus(status);
-        taskRepository.save(task);
-    }
-
     public List<Task> getTasksByStatus(TaskStatus status) {
         return taskRepository.findAll()
                 .stream()

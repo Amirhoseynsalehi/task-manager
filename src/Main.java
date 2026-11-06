@@ -49,24 +49,21 @@ public class Main {
                     searchByTitleUI();
                     break;
                 case "5":
-                    updateStatusUI();
-                    break;
-                case "6":
                     deleteTaskUI();
                     break;
-                case "7":
+                case "6":
                     sortByPriorityUI();
                     break;
-                case "8":
+                case "7":
                     getTasksByStatusUI();
                     break;
-                case "9":
+                case "8":
                     advancedFilterUI();
                     break;
-                case "10":
+                case "9":
                     showOverdueTasksUI();
                     break;
-                case "11":
+                case "10":
                     sortByDueDateUI();
                     break;
                 case "0":
@@ -85,13 +82,12 @@ public class Main {
         System.out.println("2. Update Task");
         System.out.println("3. List Tasks");
         System.out.println("4. Search by Title");
-        System.out.println("5. Update Status");
-        System.out.println("6. Delete Task");
-        System.out.println("7. Sort by Priority");
-        System.out.println("8. Search by Status");
-        System.out.println("9. Search advance");
-        System.out.println("10. Show overdue tasks");
-        System.out.println("11. Sort by due date");
+        System.out.println("5. Delete Task");
+        System.out.println("6. Sort by Priority");
+        System.out.println("7. Search by Status");
+        System.out.println("8. Search advance");
+        System.out.println("9. Show overdue tasks");
+        System.out.println("10. Sort by due date");
         System.out.println("0. Exit");
         System.out.print("\nEnter your choice:");
     }
@@ -245,37 +241,6 @@ public class Main {
             System.out.println("Error during search:" + e.getMessage());
         }
     }
-
-        private static void updateStatusUI() {
-        try {
-            System.out.print("Enter task ID: ");
-            String idInput = scanner.nextLine();
-
-            UUID id = UUID.fromString(idInput);
-
-            System.out.println("Enter new status: TODO / IN_PROGRESS / DONE / CANCELLED");
-            String statusInput = scanner.nextLine().trim().toUpperCase();
-
-            TaskStatus status;
-            try {
-                status = TaskStatus.valueOf(statusInput);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid status! Valid options: TODO / IN_PROGRESS / DONE / CANCELLED");
-                return;
-            }
-
-            service.updateStatus(id, status);
-            System.out.println("Task status updated successfully.");
-
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid ID format! Please enter a valid UUID.");
-        } catch (TaskNotFoundException e) {
-            System.out.println("Error: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("An unexpected error occurred: " + e.getMessage());
-        }
-    }
-
 
     private static void deleteTaskUI() {
         try {
