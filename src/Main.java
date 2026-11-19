@@ -113,20 +113,20 @@ public class Main {
                 return;
             }
 
-        System.out.print("Enter due date (YYYY-MM-DD) [Optional, press Enter to skip]: ");
-        String dateInput = scanner.nextLine().trim();
+            System.out.print("Enter due date (YYYY-MM-DD) [Optional, press Enter to skip]: ");
+            String dateInput = scanner.nextLine().trim();
 
-        LocalDate dueDate = null;
-        if (!dateInput.isEmpty()) {
-            try {
-                dueDate = LocalDate.parse(dateInput);
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid date format! Please use YYYY-MM-DD (e.g., 2026-11-01).");
-                return;
+            LocalDate dueDate = null;
+            if (!dateInput.isEmpty()) {
+                try {
+                    dueDate = LocalDate.parse(dateInput);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid date format! Please use YYYY-MM-DD (e.g., 2026-11-01).");
+                    return;
+                }
             }
-        }
 
-        Task task = service.createTask(title, description, priority, dueDate);
+            Task task = service.createTask(title, description, priority, dueDate);
 
             System.out.println("\nTask created successfully.");
             System.out.println(task);
@@ -197,8 +197,6 @@ public class Main {
     }
 
 
-
-
     private static void listTasksUI() {
         try {
             List<Task> tasks = service.getAllTasks();
@@ -221,7 +219,7 @@ public class Main {
 
     private static void searchByTitleUI() {
         try {
-            System.out.print("Enter a keyword to search in the title:");
+            System.out.print("Enter a keyword to search in the title: ");
             String keyword = scanner.nextLine();
 
             List<Task> results = service.searchByTitle(keyword);
@@ -238,7 +236,7 @@ public class Main {
             }
 
         } catch (Exception e) {
-            System.out.println("Error during search:" + e.getMessage());
+            System.out.println("Error during search: " + e.getMessage());
         }
     }
 
@@ -335,23 +333,37 @@ public class Main {
     }
 
     private static void showOverdueTasksUI() {
-        System.out.println("=== Overdue Tasks (NOT DONE, dueDate before today) ===");
-        var tasks = service.getOverdueTasks();
-        if (tasks.isEmpty()) {
-            System.out.println("No overdue tasks found.");
-            return;
+        try {
+            System.out.println("=== Overdue Tasks (NOT DONE, dueDate before today) ===");
+
+            List<Task> tasks = service.getOverdueTasks();
+
+            if (tasks.isEmpty()) {
+                System.out.println("No overdue tasks found.");
+                return;
+            }
+
+            tasks.forEach(System.out::println);
+        } catch (Exception e) {
+            System.out.println("Error while retrieving overdue tasks: " + e.getMessage());
         }
-        tasks.forEach(System.out::println);
     }
 
     private static void sortByDueDateUI() {
-        System.out.println("=== Tasks Sorted by Due Date (nulls last) ===");
-        var tasks = service.sortByDueDate();
-        if (tasks.isEmpty()) {
-            System.out.println("No tasks found.");
-            return;
+        try {
+            System.out.println("=== Tasks Sorted by Due Date (nulls last) ===");
+
+            List<Task> tasks = service.sortByDueDate();
+
+            if (tasks.isEmpty()) {
+                System.out.println("No tasks found.");
+                return;
+            }
+
+            tasks.forEach(System.out::println);
+        } catch (Exception e) {
+            System.out.println("Error while sorting tasks by due date: " + e.getMessage());
         }
-        tasks.forEach(System.out::println);
     }
 
 }
