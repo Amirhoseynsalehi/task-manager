@@ -120,37 +120,35 @@ class TaskServiceTest {
     }
 
     @Test
-    void getOverdueTasks_shouldReturnNotDoneTasksWithPastDueDate() {
+    void getOverdueTasks_shouldReturnOnlyNotDoneTasksWithPastDueDate() {
+        // 1. ARRANGE
         LocalDate today = LocalDate.now();
 
-        Task overdueTodo = taskService.createTask(
-                "Overdue TODO", "desc", TaskPriority.MEDIUM, today
-        );
-        overdueTodo.setDueDate(today.minusDays(1));
+        Task overdueTodo = new Task("Overdue", "Desc", TaskPriority.MEDIUM, today.minusDays(1));
+        overdueTodo.setStatus(TaskStatus.TODO);
 
-        Task overdueDone = taskService.createTask(
-                "Overdue DONE", "desc", TaskPriority.MEDIUM, today
-        );
-        overdueDone.setDueDate(today.minusDays(2));
-        taskService.updateStatus(overdueDone.getId(), TaskStatus.DONE);
+        Task overdueDone = new Task("Done Past", "Desc", TaskPriority.MEDIUM, today.minusDays(2));
+        overdueDone.setStatus(TaskStatus.DONE); // این باید در خروجی نباشد
 
-        Task futureTodo = taskService.createTask(
-                "Future", "desc", TaskPriority.MEDIUM, today.plusDays(3)
-        );
+        Task future = new Task("Future", "Desc", TaskPriority.MEDIUM, today.plusDays(3));
+        future.setStatus(TaskStatus.TODO);
 
-        Task todayTodo = taskService.createTask(
-                "Today", "desc", TaskPriority.MEDIUM, today
-        );
+        Task todayTask = new Task("Today", "Desc", TaskPriority.MEDIUM, today);
+        todayTask.setStatus(TaskStatus.TODO);
 
-        List<Task> overdue = taskService.getOverdueTasks();
+        fakeRepository.save(overdueTodo);
+        fakeRepository.save(overdueDone);
+        fakeRepository.save(future);
+        fakeRepository.save(todayTask);
 
-        assertTrue(overdue.stream()
-                .anyMatch(task -> task.getId().equals(overdueTodo.getId())));
-        assertFalse(overdue.stream()
-                .anyMatch(task -> task.getId().equals(overdueDone.getId())));
-        assertFalse(overdue.stream()
-                .anyMatch(task -> task.getId().equals(futureTodo.getId())));
-        assertFalse(overdue.stream()
-                .anyMatch(task -> task.getId().equals(todayTodo.getId())));
+        // 2. ACT
+        List<Task> result = taskService.getOverdueTasks();
+
+        // 3. ASSERT
+        assertEquals(1, result.size());
+        assertTrue(result.contains(overdueTodo));
+        assertFalse(result.contains(overdueDone));
+        assertFalse(result.contains(future));
+        assertFalse(result.contains(todayTask));
     }
 }
