@@ -91,12 +91,20 @@ class TaskServiceTest {
     }
 
     @Test
-    void updateStatus_existingTask_shouldUpdateSuccessfully() {
+    void updateTask_existingTask_shouldUpdateSuccessfully() {
+
         Task task = taskService.createTask("Write Docs", "Docs for API", TaskPriority.LOW, LocalDate.now().plusDays(2));
-        taskService.updateStatus(task.getId(), TaskStatus.DONE);
+
+        taskService.updateTask(task.getId(), "Updated Title", "Updated Description", TaskPriority.HIGH, LocalDate.now().plusDays(5), TaskStatus.DONE);
         Task updatedTask = taskService.findById(task.getId());
+
+        assertEquals("Updated Title", updatedTask.getTitle());
+        assertEquals("Updated Description", updatedTask.getDescription());
+        assertEquals(TaskPriority.HIGH, updatedTask.getPriority());
+        assertEquals(LocalDate.now().plusDays(5), updatedTask.getDueDate());
         assertEquals(TaskStatus.DONE, updatedTask.getStatus());
     }
+
 
     @Test
     void deleteTask_existingTask_shouldRemoveTask() {
