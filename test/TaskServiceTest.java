@@ -150,6 +150,40 @@ class TaskServiceTest {
     }
 
     @Test
+    void searchByTitle_existingKeyword_shouldReturnMatchingTasks() {
+        taskService.createTask("Learn Java Spring", "Backend path", TaskPriority.HIGH, LocalDate.now().plusDays(5));
+        taskService.createTask("Learn JUnit", "Unit testing basics", TaskPriority.MEDIUM, LocalDate.now().plusDays(2));
+        taskService.createTask("Read Book", "Non matching", TaskPriority.LOW, LocalDate.now().plusDays(1));
+
+        List<Task> results = taskService.searchByTitle("Learn");
+
+        assertEquals(2, results.size());
+    }
+
+    @Test
+    void searchByTitle_nullOrBlankKeyword_shouldReturnEmptyList() {
+        taskService.createTask("Learn Java", "Desc", TaskPriority.HIGH, LocalDate.now().plusDays(2));
+
+        List<Task> resultNull = taskService.searchByTitle(null);
+        List<Task> resultBlank = taskService.searchByTitle("   ");
+
+        assertTrue(resultNull.isEmpty());
+        assertTrue(resultBlank.isEmpty());
+    }
+
+    @Test
+    void searchByTitle_caseInsensitive_shouldMatchTasks() {
+        taskService.createTask("LEARN DOCKER", "Desc", TaskPriority.MEDIUM, LocalDate.now().plusDays(2));
+
+        List<Task> results = taskService.searchByTitle("learn");
+
+        assertEquals(1, results.size());
+        assertEquals("LEARN DOCKER", results.get(0).getTitle());
+    }
+
+
+
+    @Test
     void getOverdueTasks_shouldReturnOnlyNotDoneTasksWithPastDueDate() {
         // 1. ARRANGE
         LocalDate today = LocalDate.now();
