@@ -20,7 +20,6 @@ class TaskServiceTest {
 
     @BeforeEach
     void setUp() {
-        // قبل از هر تست یک مخزن درون‌حافظه‌ای تمیز و سرویس تازه می‌سازیم
         fakeRepository = new FakeTaskRepository();
         taskService = new TaskService(fakeRepository);
     }
@@ -33,10 +32,8 @@ class TaskServiceTest {
         TaskPriority priority = TaskPriority.HIGH;
         LocalDate dueDate = LocalDate.now().plusDays(5);
 
-        // Act
         Task createdTask = taskService.createTask(title, description, priority, dueDate);
 
-        // Assert
         assertNotNull(createdTask);
         assertNotNull(createdTask.getId());
         assertEquals(title, createdTask.getTitle());
@@ -212,14 +209,13 @@ class TaskServiceTest {
 
     @Test
     void getOverdueTasks_shouldReturnOnlyNotDoneTasksWithPastDueDate() {
-        // 1. ARRANGE
         LocalDate today = LocalDate.now();
 
         Task overdueTodo = new Task("Overdue", "Desc", TaskPriority.MEDIUM, today.minusDays(1));
         overdueTodo.setStatus(TaskStatus.TODO);
 
         Task overdueDone = new Task("Done Past", "Desc", TaskPriority.MEDIUM, today.minusDays(2));
-        overdueDone.setStatus(TaskStatus.DONE); // این باید در خروجی نباشد
+        overdueDone.setStatus(TaskStatus.DONE);
 
         Task future = new Task("Future", "Desc", TaskPriority.MEDIUM, today.plusDays(3));
         future.setStatus(TaskStatus.TODO);
@@ -232,10 +228,8 @@ class TaskServiceTest {
         fakeRepository.save(future);
         fakeRepository.save(todayTask);
 
-        // 2. ACT
         List<Task> result = taskService.getOverdueTasks();
 
-        // 3. ASSERT
         assertEquals(1, result.size());
         assertTrue(result.contains(overdueTodo));
         assertFalse(result.contains(overdueDone));
@@ -245,36 +239,31 @@ class TaskServiceTest {
 
     @Test
     void sortByPriority_shouldOrderTasksFromHighToLow() {
-        // 1. Arrange: ایجاد تسک‌ها با اولویت‌های نامرتب
         Task low = taskService.createTask("Task Low", "Desc", TaskPriority.LOW, LocalDate.now().plusDays(3));
         Task high = taskService.createTask("Task High", "Desc", TaskPriority.HIGH, LocalDate.now().plusDays(2));
         Task medium = taskService.createTask("Task Medium", "Desc", TaskPriority.MEDIUM, LocalDate.now().plusDays(1));
 
-        // 2. Act
         List<Task> sorted = taskService.sortByPriority();
 
-        // 3. Assert
         assertEquals(3, sorted.size());
-        assertEquals(high.getId(), sorted.get(0).getId());     // اولویت اول: HIGH
-        assertEquals(medium.getId(), sorted.get(1).getId());   // اولویت دوم: MEDIUM
-        assertEquals(low.getId(), sorted.get(2).getId());      // اولویت سوم: LOW
+        assertEquals(high.getId(), sorted.get(0).getId());
+        assertEquals(medium.getId(), sorted.get(1).getId());
+        assertEquals(low.getId(), sorted.get(2).getId());
     }
 
     @Test
     void filterTasks_matchingStatusAndPriority_shouldReturnOnlyMatchedTasks() {
-        // Arrange
+
         Task t1 = taskService.createTask("Task 1", "Desc", TaskPriority.HIGH, LocalDate.now().plusDays(1));
         taskService.updateTask(t1.getId(), t1.getTitle(), t1.getDescription(), t1.getPriority(), t1.getDueDate(), TaskStatus.IN_PROGRESS);
 
-        Task t2 = taskService.createTask("Task 2", "Desc", TaskPriority.HIGH, LocalDate.now().plusDays(1)); // Status: TODO
+        taskService.createTask("Task 2", "Desc", TaskPriority.HIGH, LocalDate.now().plusDays(1)); // Status: TODO
 
         Task t3 = taskService.createTask("Task 3", "Desc", TaskPriority.LOW, LocalDate.now().plusDays(1));
         taskService.updateTask(t3.getId(), t3.getTitle(), t3.getDescription(), t3.getPriority(), t3.getDueDate(), TaskStatus.IN_PROGRESS);
 
-        // Act: فقط تسک‌هایی که HIGH و IN_PROGRESS هستند
         List<Task> filtered = taskService.filterTasks(TaskStatus.IN_PROGRESS, TaskPriority.HIGH);
 
-        // Assert
         assertEquals(1, filtered.size());
         assertEquals(t1.getId(), filtered.get(0).getId());
     }
@@ -288,6 +277,31 @@ class TaskServiceTest {
 
         assertEquals(2, result.size());
     }
+
+    @Test
+    void filterTasks_onlyStatusFilter_shouldReturnTasksWithGivenStatus() {
+        Task t1 = taskService.createTask("T1", "Desc", TaskPriority.HIGH, LocalDate.now().plusDays(1));
+        taskService.updateTask(t1.getId(), t1.getTitle(), t1.getDescription(), t1.getPriority(), t1.getDueDate(), TaskStatus.DONE);
+
+        taskService.createTask("T2", "Desc", TaskPriority.LOW, LocalDate.now().plusDays(1)); // Status: TODO
+
+        List<Task> result = taskService.filterTasks(TaskStatus.DONE, null);
+
+        assertEquals(1, result.size());
+        assertEquals(t1.getId(), result.get(0).getId());
+    }
+
+    @Test
+    void filterTasks_onlyPriorityFilter_shouldReturnTasksWithGivenPriority() {
+        Task t1 = taskService.createTask("T1", "Desc", TaskPriority.HIGH, LocalDate.now().plusDays(1));
+        taskService.createTask("T2", "Desc", TaskPriority.LOW, LocalDate.now().plusDays(1));
+
+        List<Task> result = taskService.filterTasks(null, TaskPriority.HIGH);
+
+        assertEquals(1, result.size());
+        assertEquals(t1.getId(), result.get(0).getId());
+    }
+
 
 
 }
