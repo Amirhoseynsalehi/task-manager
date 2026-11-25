@@ -107,6 +107,28 @@ class TaskServiceTest {
 
 
     @Test
+    void updateTask_nullPriority_shouldThrowInvalidTaskDataException() {
+
+        Task task = taskService.createTask("Test Task", "Desc", TaskPriority.MEDIUM, LocalDate.now().plusDays(1));
+
+        assertThrows(InvalidTaskDataException.class, () -> {
+            taskService.updateTask(task.getId(), "Updated Title", "Desc", null, LocalDate.now().plusDays(1), TaskStatus.IN_PROGRESS);
+        });
+    }
+
+    @Test
+    void updateTask_nullStatus_shouldThrowInvalidTaskDataException() {
+
+        Task task = taskService.createTask("Test Task", "Desc", TaskPriority.MEDIUM, LocalDate.now().plusDays(1));
+
+        assertThrows(InvalidTaskDataException.class, () -> {
+            taskService.updateTask(task.getId(), "Updated Title", "Desc", TaskPriority.HIGH, LocalDate.now().plusDays(1), null);
+        });
+    }
+
+
+
+    @Test
     void deleteTask_existingTask_shouldRemoveTask() {
         Task task = taskService.createTask("Task to remove", "Will be deleted", TaskPriority.LOW, LocalDate.now().plusDays(1));
         UUID taskId = task.getId();
