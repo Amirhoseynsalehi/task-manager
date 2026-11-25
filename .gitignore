@@ -1,29 +1,19 @@
-### IntelliJ IDEA ###
+# IntelliJ IDEA
+.idea/
+*.iml
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 
-### Eclipse ###
-.apt_generated
+# Runtime Data & Persistence
+tasks.dat
+tasks.dat.bak
+
+# Eclipse / NetBeans / VSCode
 .classpath
-.factorypath
 .project
-.settings
-.springBeans
-.sts4-cache
+.settings/
 bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
 .vscode/
 
-### Mac OS ###
+# OS specific files
 .DS_Store
+Thumbs.db
