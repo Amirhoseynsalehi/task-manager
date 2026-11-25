@@ -126,6 +126,23 @@ class TaskServiceTest {
         });
     }
 
+    @Test
+    void updateTask_nonExistingId_shouldThrowTaskNotFoundException() {
+
+        UUID nonExistingId = UUID.randomUUID();
+
+        assertThrows(TaskNotFoundException.class, () -> {
+            taskService.updateTask(
+                    nonExistingId,
+                    "Updated Title",
+                    "Updated Description",
+                    TaskPriority.MEDIUM,
+                    LocalDate.now().plusDays(2),
+                    TaskStatus.IN_PROGRESS
+            );
+        });
+    }
+
 
 
     @Test
