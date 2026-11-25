@@ -137,6 +137,16 @@ class TaskServiceTest {
     }
 
     @Test
+    void deleteTask_nonExistingId_shouldThrowTaskNotFoundException() {
+        UUID nonExistingId = UUID.randomUUID();
+
+        assertThrows(TaskNotFoundException.class, () -> {
+            taskService.deleteTask(nonExistingId);
+        });
+    }
+
+
+    @Test
     void sortByDueDate_shouldPlaceNullsLast_andAscendingByDate() {
         Task t1 = taskService.createTask("A", "desc", TaskPriority.LOW, LocalDate.now().plusDays(5));
         Task t2 = taskService.createTask("B", "desc", TaskPriority.LOW, LocalDate.now().plusDays(2));
