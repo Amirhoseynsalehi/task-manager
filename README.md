@@ -87,7 +87,7 @@ TaskManager/
 │   ├── FakeTaskRepository.java    # In-memory Test Double
 │   └── TaskServiceTest.java       # Service layer test suite (11 tests)
 └── tasks.dat                      # Auto-generated runtime data file
-
+```
 🧪 Testing Strategy
 
 Unit Tests: Written with JUnit 5 (TaskServiceTest, containing 11 focused test cases covering creation validation, find/not-found behavior, successful update, deletion, null-safe due-date sorting, and overdue task filtering).
